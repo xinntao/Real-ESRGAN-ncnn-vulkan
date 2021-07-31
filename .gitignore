@@ -1,5 +1,6 @@
 *.bin
 *.param
+build
 
 # Prerequisites
 *.d
