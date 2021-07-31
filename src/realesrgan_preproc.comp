@@ -1,0 +1,95 @@
+
+#version 450
+
+#if NCNN_fp16_storage
+#extension GL_EXT_shader_16bit_storage: require
+#define sfp float16_t
+#else
+#define sfp float
+#endif
+
+#if NCNN_int8_storage
+#extension GL_EXT_shader_8bit_storage: require
+#endif
+
+layout (constant_id = 0) const int bgr = 0;
+
+#if NCNN_int8_storage
+layout (binding = 0) readonly buffer bottom_blob { uint8_t bottom_blob_data[]; };
+#else
+layout (binding = 0) readonly buffer bottom_blob { float bottom_blob_data[]; };
+#endif
+layout (binding = 1) writeonly buffer top_blob { sfp top_blob_data[]; };
+layout (binding = 2) writeonly buffer alpha_blob { sfp alpha_blob_data[]; };
+
+layout (push_constant) uniform parameter
+{
+    int w;
+    int h;
+    int cstep;
+
+    int outw;
+    int outh;
+    int outcstep;
+
+    int pad_top;
+    int pad_left;
+
+    int crop_x;
+    int crop_y;
+
+    int channels;
+
+    int alphaw;
+    int alphah;
+} p;
+
+void main()
+{
+    int gx = int(gl_GlobalInvocationID.x);
+    int gy = int(gl_GlobalInvocationID.y);
+    int gz = int(gl_GlobalInvocationID.z);
+
+    if (gx >= p.outw || gy >= p.outh || gz >= p.channels)
+        return;
+
+    int x = gx + p.crop_x - p.pad_left;
+    int y = gy + p.crop_y - p.pad_top;
+
+    x = abs(x);
+    y = abs(y);
+    x = (p.w - 1) - abs(x - (p.w - 1));
+    y = (p.h - 1) - abs(y - (p.h - 1));
+
+#if NCNN_int8_storage
+    int v_offset = y * p.w + x;
+
+    float v;
+
+    if (bgr == 1 && gz != 3)
+        v = float(uint(bottom_blob_data[v_offset * p.channels + 2 - gz]));
+    else
+        v = float(uint(bottom_blob_data[v_offset * p.channels + gz]));
+#else
+    int v_offset = gz * p.cstep + y * p.w + x;
+
+    float v = bottom_blob_data[v_offset];
+#endif
+
+    if (gz == 3)
+    {
+        gx -= p.pad_left;
+        gy -= p.pad_top;
+
+        if (gx >= 0 && gx < p.alphaw && gy >= 0 && gy < p.alphah)
+        {
+            alpha_blob_data[gy * p.alphaw + gx] = sfp(v);
+        }
+    }
+    else
+    {
+        const float norm_val = 1 / 255.f;
+
+        top_blob_data[gz * p.outcstep + gy * p.outw + gx] = sfp(v * norm_val);
+    }
+}
