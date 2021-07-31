@@ -1,10 +1,13 @@
 // realesrgan implemented with ncnn library
-
+#include <iostream>
 #include <stdio.h>
 #include <algorithm>
 #include <queue>
 #include <vector>
 #include <clocale>
+#include <filesystem>
+namespace fs = std::filesystem;
+
 
 #if _WIN32
 // image decoder and encoder with wic
@@ -371,6 +374,14 @@ void* save(void* args)
         int success = 0;
 
         path_t ext = get_file_extension(v.outpath);
+
+        /* ----------- Create folder if not exists -------------------*/
+        fs::path fs_path = fs::absolute(v.outpath);
+        std::string parent_path = fs_path.parent_path().string();
+        if (fs::exists(parent_path) != 1){
+            std::cout << "Create folder: [" << parent_path << "]." << std::endl;
+            fs::create_directories(parent_path);
+        }
 
         if (ext == PATHSTR("webp") || ext == PATHSTR("WEBP"))
         {
