@@ -107,7 +107,8 @@ static void print_usage()
     fprintf(stderr, "  -o output-path       output image path (jpg/png/webp) or directory\n");
     fprintf(stderr, "  -s scale             upscale ratio (4, default=4)\n");
     fprintf(stderr, "  -t tile-size         tile size (>=32/0=auto, default=0) can be 0,0,0 for multi-gpu\n");
-    fprintf(stderr, "  -m model-path        realesrgan model path (default=models-DF2K_JPEG)\n");
+    fprintf(stderr, "  -m model-path        model path (default=models)\n");
+    fprintf(stderr, "  -n model-name        model name (default=realesrgan-x4plus, can be realesrgan-x4plus | realesrnet-x4plus | esrgan-x4)\n");
     fprintf(stderr, "  -g gpu-id            gpu device to use (default=auto) can be 0,1,2 for multi-gpu\n");
     fprintf(stderr, "  -j load:proc:save    thread count for load/proc/save (default=1:2:2) can be 1:2,2,2:2 for multi-gpu\n");
     fprintf(stderr, "  -x                   enable tta mode\n");
@@ -426,7 +427,8 @@ int main(int argc, char** argv)
     path_t outputpath;
     int scale = 4;
     std::vector<int> tilesize;
-    path_t model = PATHSTR("models-DF2K_JPEG");
+    path_t model = PATHSTR("models");
+    path_t modelname = PATHSTR("realesrgan-x4plus");
     std::vector<int> gpuid;
     int jobs_load = 1;
     std::vector<int> jobs_proc;
@@ -438,7 +440,7 @@ int main(int argc, char** argv)
 #if _WIN32
     setlocale(LC_ALL, "");
     wchar_t opt;
-    while ((opt = getopt(argc, argv, L"i:o:s:t:m:g:j:f:vxh")) != (wchar_t)-1)
+    while ((opt = getopt(argc, argv, L"i:o:s:t:m:n:g:j:f:vxh")) != (wchar_t)-1)
     {
         switch (opt)
         {
@@ -456,6 +458,9 @@ int main(int argc, char** argv)
             break;
         case L'm':
             model = optarg;
+            break;
+        case L'n':
+            modelname = optarg;
             break;
         case L'g':
             gpuid = parse_optarg_int_array(optarg);
@@ -481,7 +486,7 @@ int main(int argc, char** argv)
     }
 #else // _WIN32
     int opt;
-    while ((opt = getopt(argc, argv, "i:o:s:t:m:g:j:f:vxh")) != -1)
+    while ((opt = getopt(argc, argv, "i:o:s:t:m:n:g:j:f:vxh")) != -1)
     {
         switch (opt)
         {
@@ -499,6 +504,9 @@ int main(int argc, char** argv)
             break;
         case 'm':
             model = optarg;
+            break;
+        case 'n':
+            modelname = optarg;
             break;
         case 'g':
             gpuid = parse_optarg_int_array(optarg);
@@ -660,8 +668,8 @@ int main(int argc, char** argv)
 
     int prepadding = 0;
 
-    if (model.find(PATHSTR("models-DF2K")) != path_t::npos
-        || model.find(PATHSTR("models-DF2K_JPEG")) != path_t::npos)
+    if (model.find(PATHSTR("models")) != path_t::npos
+        || model.find(PATHSTR("models2")) != path_t::npos)
     {
         prepadding = 10;
     }
@@ -671,21 +679,31 @@ int main(int argc, char** argv)
         return -1;
     }
 
+    // if (modelname.find(PATHSTR("realesrgan-x4plus")) != path_t::npos
+    //     || modelname.find(PATHSTR("realesrnet-x4plus")) != path_t::npos
+    //     || modelname.find(PATHSTR("esrgan-x4")) != path_t::npos)
+    // {}
+    // else
+    // {
+    //     fprintf(stderr, "unknown model name\n");
+    //     return -1;
+    // }
+
 #if _WIN32
     wchar_t parampath[256];
     wchar_t modelpath[256];
     if (scale == 4)
     {
-        swprintf(parampath, 256, L"%s/x4.param", model.c_str());
-        swprintf(modelpath, 256, L"%s/x4.bin", model.c_str());
+        swprintf(parampath, 256, L"%s/%s.param", model.c_str(), modelname.c_str());
+        swprintf(modelpath, 256, L"%s/%s.bin", model.c_str(), modelname.c_str());
     }
 #else
     char parampath[256];
     char modelpath[256];
     if (scale == 4)
     {
-        sprintf(parampath, "%s/x4.param", model.c_str());
-        sprintf(modelpath, "%s/x4.bin", model.c_str());
+        sprintf(parampath, "%s/%s.param", model.c_str(), modelname.c_str());
+        sprintf(modelpath, "%s/%s.bin", model.c_str(), modelname.c_str());
     }
 #endif
 
@@ -747,8 +765,7 @@ int main(int argc, char** argv)
         uint32_t heap_budget = ncnn::get_gpu_device(gpuid[i])->get_heap_budget();
 
         // more fine-grained tilesize policy here
-        if (model.find(PATHSTR("models-DF2K")) != path_t::npos
-            || model.find(PATHSTR("models-DF2K_JPEG")) != path_t::npos)
+        if (model.find(PATHSTR("models")) != path_t::npos)
         {
             if (heap_budget > 1900)
                 tilesize[i] = 200;
