@@ -111,7 +111,7 @@ static void print_usage()
     fprintf(stderr, "  -s scale             upscale ratio (4, default=4)\n");
     fprintf(stderr, "  -t tile-size         tile size (>=32/0=auto, default=0) can be 0,0,0 for multi-gpu\n");
     fprintf(stderr, "  -m model-path        model path (default=models)\n");
-    fprintf(stderr, "  -n model-name        model name (default=realesrgan-x4plus, can be realesrgan-x4plus | realesrnet-x4plus | esrgan-x4)\n");
+    fprintf(stderr, "  -n model-name        model name (default=realesrgan-x4plus, can be realesrgan-x4plus | realesrgan-x4plus-anime | realesrnet-x4plus)\n");
     fprintf(stderr, "  -g gpu-id            gpu device to use (default=auto) can be 0,1,2 for multi-gpu\n");
     fprintf(stderr, "  -j load:proc:save    thread count for load/proc/save (default=1:2:2) can be 1:2,2,2:2 for multi-gpu\n");
     fprintf(stderr, "  -x                   enable tta mode\n");
