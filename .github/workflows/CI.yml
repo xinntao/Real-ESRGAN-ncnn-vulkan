@@ -1,7 +1,6 @@
 name: CI
 on: [push, pull_request]
-env:
-  DEVELOPER_DIR: /Applications/Xcode_12.2.app/Contents/Developer
+
 jobs:
   windows:
     runs-on: windows-latest
@@ -56,6 +55,8 @@ jobs:
 
   macos:
     runs-on: macos-latest
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_12.2.app/Contents/Developer
     steps:
     - uses: actions/checkout@v2
       with:

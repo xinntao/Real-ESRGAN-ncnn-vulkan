@@ -94,12 +94,12 @@ If you encounter crash or error, try to upgrade your GPU driver
 
 ## :scroll: BibTeX
 
-  @InProceedings{wang2021realesrgan,
-    author    = {Xintao Wang and Liangbin Xie and Chao Dong and Ying Shan},
-    title     = {Real-ESRGAN: Training Real-World Blind Super-Resolution with Pure Synthetic Data},
-    booktitle = {International Conference on Computer Vision Workshops (ICCVW)},
-    date      = {2021}
-  }
+    @InProceedings{wang2021realesrgan,
+        author    = {Xintao Wang and Liangbin Xie and Chao Dong and Ying Shan},
+        title     = {Real-ESRGAN: Training Real-World Blind Super-Resolution with Pure Synthetic Data},
+        booktitle = {International Conference on Computer Vision Workshops (ICCVW)},
+        date      = {2021}
+    }
 
 ## :e-mail: Contact
 
