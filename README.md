@@ -10,12 +10,12 @@ This project is the [ncnn](https://github.com/Tencent/ncnn) implementation of [R
 *Real-ESRGAN ncnn Vulkan* heavily borrows from [realsr-ncnn-vulkan](https://github.com/nihui/realsr-ncnn-vulkan).
 Many thanks to [nihui](https://github.com/nihui), [ncnn](https://github.com/Tencent/ncnn) and [realsr-ncnn-vulkan](https://github.com/nihui/realsr-ncnn-vulkan) :grin:
 
-Real-ESRGAN aims at developing **Practical Algorithms for General Image Restoration**.<br>
-We extend the powerful ESRGAN to a practical restoration application (namely, Real-ESRGAN), which is trained with pure synthetic data.
+Real-ESRGAN aims at developing **Practical Algorithms for General Image Restoration**. We also optimize it for anime images.
 
 ### :zap: Contents
 
-- []()
+- [TODO List](#hourglass_flowing_sand-todo-list)
+- [Usages](#computer-usages)
 
 ---
 
@@ -42,9 +42,9 @@ Other recommended projects:<br>
 
 ## :hourglass_flowing_sand: TODO List
 
-- [ ] Support cheap arbitrary resize (*e.g.*, bicubic, bilinear) for model outputs
-- [ ] Add the guidance for ncnn model conversion
+- [ ] Support further cheap arbitrary resize (*e.g.*, bicubic, bilinear)
 - [ ] Bug: Some PCs will output black images
+- [ ] Add the guidance for ncnn model conversion
 - [ ] Support face restoration - GFPGAN
 
 ## :computer: Usages
@@ -52,7 +52,7 @@ Other recommended projects:<br>
 ### Example Command
 
 ```shell
-realesrgan-ncnn-vulkan.exe -i input.jpg -o output.png -n 2 -s 2
+realesrgan-ncnn-vulkan.exe -i input.jpg -o output.png -n realesrgan-x4plus-anime
 ```
 
 ### Full Usages
