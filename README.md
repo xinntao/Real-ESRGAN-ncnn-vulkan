@@ -5,7 +5,7 @@
 [![Open issue](https://img.shields.io/github/issues/xinntao/Real-ESRGAN-ncnn-vulkan)](https://github.com/xinntao/Real-ESRGAN-ncnn-vulkan/issues)
 [![Closed issue](https://img.shields.io/github/issues-closed/xinntao/Real-ESRGAN-ncnn-vulkan)](https://github.com/xinntao/Real-ESRGAN-ncnn-vulkan/issues)
 
-This project is the [ncnn](https://github.com/Tencent/ncnn) implementation of [Real-ESRGAN](https://github.com/xinntao/Real-ESRGAN).
+This project is the [ncnn](https://github.com/Tencent/ncnn) implementation of [**Real-ESRGAN**](https://github.com/xinntao/Real-ESRGAN).
 *Real-ESRGAN ncnn Vulkan* heavily borrows from [realsr-ncnn-vulkan](https://github.com/nihui/realsr-ncnn-vulkan).
 Many thanks to [nihui](https://github.com/nihui), [ncnn](https://github.com/Tencent/ncnn) and [realsr-ncnn-vulkan](https://github.com/nihui/realsr-ncnn-vulkan) :grin:
 
@@ -57,7 +57,7 @@ realesrgan-ncnn-vulkan.exe -i input.jpg -o output.png -n realesrgan-x4plus-anime
 ### Full Usages
 
 ```console
-Usage: realesrgan-ncnn-vulkan -i infile -o outfile [options]...
+Usage: realesrgan-ncnn-vulkan.exe -i infile -o outfile [options]...
 
   -h                   show this help
   -v                   verbose output
