@@ -1,41 +1,39 @@
-# RealESRGAN ncnn Vulkan
+# Real-ESRGAN ncnn Vulkan
 
-![CI](https://github.com/xinntao/realesrgan-ncnn-vulkan/workflows/CI/badge.svg)
-![download](https://img.shields.io/github/downloads/xinntao/realesrgan-ncnn-vulkan/total.svg)
+![CI](https://github.com/xinntao/Real-ESRGAN-ncnn-vulkan/workflows/CI/badge.svg)
+[![LICENSE](https://img.shields.io/github/license/xinntao/Real-ESRGAN-ncnn-vulkan.svg)](https://github.com/xinntao/Real-ESRGAN-ncnn-vulkan/blob/master/LICENSE)
 
-ncnn implementation of Real-World Super-Resolution via Kernel Estimation and Noise Injection super resolution.
+This project is the [ncnn](https://github.com/Tencent/ncnn) implementation of [Real-ESRGAN](https://github.com/xinntao/Real-ESRGAN).<br>
+*Real-ESRGAN ncnn Vulkan* heavily borrows from [realsr-ncnn-vulkan](https://github.com/nihui/realsr-ncnn-vulkan).<br>
+Many thanks to [nihui](https://github.com/nihui), [ncnn](https://github.com/Tencent/ncnn) and [realsr-ncnn-vulkan](https://github.com/nihui/realsr-ncnn-vulkan) :grin:
 
-realesrgan-ncnn-vulkan uses [ncnn project](https://github.com/Tencent/ncnn) as the universal neural network inference framework.
+Real-ESRGAN aims at developing Practical Algorithms for General Image Restoration.<br>
+We extend the powerful ESRGAN to a practical restoration application (namely, Real-ESRGAN), which is trained with pure synthetic data.
 
-## [Download](https://github.com/nihui/realesrgan-ncnn-vulkan/releases)
+---
 
-Download Windows/Linux/MacOS Executable for Intel/AMD/Nvidia GPU
+If Real-ESRGAN is helpful in your photos/projects, please help to :star: this repo or recommend it to your friends. Thanks:blush: <br>
+Other recommended projects:<br>
+:arrow_forward: [Real-ESRGAN](https://github.com/xinntao/Real-ESRGAN): A practical algorithm for general image restoration<br>
+:arrow_forward: [GFPGAN](https://github.com/TencentARC/GFPGAN): A practical algorithm for real-world face restoration <br>
+:arrow_forward: [BasicSR](https://github.com/xinntao/BasicSR): An open-source image and video restoration toolbox<br>
+:arrow_forward: [facexlib](https://github.com/xinntao/facexlib): A collection that provides useful face-relation functions.<br>
+:arrow_forward: [HandyView](https://github.com/xinntao/HandyView): A PyQt5-based image viewer that is handy for view and comparison. <br>
 
-**https://github.com/nihui/realesrgan-ncnn-vulkan/releases**
+### :book: Real-ESRGAN: Training Real-World Blind Super-Resolution with Pure Synthetic Data
 
-This package includes all the binaries and models required. It is portable, so no CUDA or Caffe runtime environment is needed :)
+> [[Paper](https://arxiv.org/abs/2107.10833)] &emsp; [Project Page] &emsp; [Demo] <br>
+> [Xintao Wang](https://xinntao.github.io/), Liangbin Xie, [Chao Dong](https://scholar.google.com.hk/citations?user=OSDCB0UAAAAJ), [Ying Shan](https://scholar.google.com/citations?user=4oXBp9UAAAAJ&hl=en) <br>
+> Tencent ARC Lab<br>
+> Shenzhen Institutes of Advanced Technology, Chinese Academy of Sciences
 
-## About RealEsrgan
-
-Real-World Super-Resolution via Kernel Estimation and Noise Injection (CVPRW 2020)
-
-https://github.com/jixiaozhong/RealSR
-
-Xiaozhong Ji, Yun Cao, Ying Tai, Chengjie Wang, Jilin Li, and Feiyue Huang
-
-*Tencent YouTu Lab*
-
-Our solution is the **winner of CVPR NTIRE 2020 Challenge on Real-World Super-Resolution** in both tracks.
-
-https://arxiv.org/abs/2005.01996
-
-## Usages
-
-### Example Command
-
-```shell
-realsr-ncnn-vulkan.exe -i input.jpg -o output.png -s 4
-```
+<p align="center">
+  <img src="https://raw.githubusercontent.com/xinntao/Real-ESRGAN/master/assets/teaser.jpg">
+</p>
+<p align="center">
+  <img src="https://raw.githubusercontent.com/xinntao/public-figures/master/Real-ESRGAN/cmp_realesrgan_anime_1.png">
+</p>
+---
 
 ### Full Usages
 
@@ -66,72 +64,6 @@ If you encounter crash or error, try to upgrade your GPU driver
 - Intel: https://downloadcenter.intel.com/product/80939/Graphics-Drivers
 - AMD: https://www.amd.com/en/support
 - NVIDIA: https://www.nvidia.com/Download/index.aspx
-
-## Build from Source
-
-1. Download and setup the Vulkan SDK from https://vulkan.lunarg.com/
-  - For Linux distributions, you can either get the essential build requirements from package manager
-```shell
-dnf install vulkan-headers vulkan-loader-devel
-```
-```shell
-apt-get install libvulkan-dev
-```
-```shell
-pacman -S vulkan-headers vulkan-icd-loader
-```
-
-2. Clone this project with all submodules
-
-```shell
-git clone https://github.com/nihui/realsr-ncnn-vulkan.git
-cd realsr-ncnn-vulkan
-git submodule update --init --recursive
-```
-
-3. Build with CMake
-  - You can pass -DUSE_STATIC_MOLTENVK=ON option to avoid linking the vulkan loader library on MacOS
-
-```shell
-mkdir build
-cd build
-cmake ../src
-cmake --build . -j 4
-```
-
-## Sample Images
-
-### Original Image
-
-![origin](images/0.png)
-
-### Upscale 4x with ImageMagick Lanczo4 Filter
-
-```shell
-convert origin.jpg -resize 400% output.png
-```
-
-![browser](images/im.png)
-
-### Upscale 4x with srmd scale=4 noise=-1
-
-```shell
-srmd-ncnn-vulkan.exe -i origin.jpg -o 4x.png -s 4 -n -1
-```
-
-![waifu2x](images/srmd.png)
-
-### Upscale 4x with realsr model=DF2K scale=4 tta=1
-
-```shell
-realsr-ncnn-vulkan.exe -i origin.jpg -o output.png -s 4 -x -m models-DF2K
-```
-
-![realsr](images/2.png)
-
-## Original RealSR Project
-
-- https://github.com/jixiaozhong/RealSR
 
 ## Other Open-Source Code Used
 
