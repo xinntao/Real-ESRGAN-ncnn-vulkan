@@ -2,7 +2,8 @@
 
 ![CI](https://github.com/xinntao/Real-ESRGAN-ncnn-vulkan/workflows/CI/badge.svg)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://github.com/xinntao/Real-ESRGAN-ncnn-vulkan/blob/master/LICENSE)
-
+[![Open issue](https://img.shields.io/github/issues/xinntao/Real-ESRGAN-ncnn-vulkan)](https://github.com/xinntao/Real-ESRGAN-ncnn-vulkan/issues)
+[![Closed issue](https://img.shields.io/github/issues-closed/xinntao/Real-ESRGAN-ncnn-vulkan)](https://github.com/xinntao/Real-ESRGAN-ncnn-vulkan/issues)
 
 
 
