@@ -5,15 +5,13 @@
 [![Open issue](https://img.shields.io/github/issues/xinntao/Real-ESRGAN-ncnn-vulkan)](https://github.com/xinntao/Real-ESRGAN-ncnn-vulkan/issues)
 [![Closed issue](https://img.shields.io/github/issues-closed/xinntao/Real-ESRGAN-ncnn-vulkan)](https://github.com/xinntao/Real-ESRGAN-ncnn-vulkan/issues)
 
-
-
-This project is the [ncnn](https://github.com/Tencent/ncnn) implementation of [Real-ESRGAN](https://github.com/xinntao/Real-ESRGAN).<br>
+This project is the [ncnn](https://github.com/Tencent/ncnn) implementation of [Real-ESRGAN](https://github.com/xinntao/Real-ESRGAN).
 *Real-ESRGAN ncnn Vulkan* heavily borrows from [realsr-ncnn-vulkan](https://github.com/nihui/realsr-ncnn-vulkan).
 Many thanks to [nihui](https://github.com/nihui), [ncnn](https://github.com/Tencent/ncnn) and [realsr-ncnn-vulkan](https://github.com/nihui/realsr-ncnn-vulkan) :grin:
 
 Real-ESRGAN aims at developing **Practical Algorithms for General Image Restoration**. We also optimize it for anime images.
 
-### :zap: Contents
+### Contents
 
 - [TODO List](#hourglass_flowing_sand-todo-list)
 - [Usages](#computer-usages)
@@ -43,7 +41,7 @@ Other recommended projects:<br>
 
 ## :hourglass_flowing_sand: TODO List
 
-- [ ] Support further cheap arbitrary resize (*e.g.*, bicubic, bilinear)
+- [ ] Support further cheap arbitrary resize (*e.g.*, bicubic, bilinear) for the model outputs
 - [ ] Bug: Some PCs will output black images
 - [ ] Add the guidance for ncnn model conversion
 - [ ] Support face restoration - GFPGAN
@@ -96,12 +94,12 @@ If you encounter crash or error, try to upgrade your GPU driver
 
 ## :scroll: BibTeX
 
-    @Article{wang2021realesrgan,
-        title={Real-ESRGAN: Training Real-World Blind Super-Resolution with Pure Synthetic Data},
-        author={Xintao Wang and Liangbin Xie and Chao Dong and Ying Shan},
-        journal={arXiv:2107.10833},
-        year={2021}
-    }
+  @InProceedings{wang2021realesrgan,
+    author    = {Xintao Wang and Liangbin Xie and Chao Dong and Ying Shan},
+    title     = {Real-ESRGAN: Training Real-World Blind Super-Resolution with Pure Synthetic Data},
+    booktitle = {International Conference on Computer Vision Workshops (ICCVW)},
+    date      = {2021}
+  }
 
 ## :e-mail: Contact
 
