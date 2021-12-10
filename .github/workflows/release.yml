@@ -5,7 +5,7 @@ on:
       - '*'
 
 env:
-  DEVELOPER_DIR: /Applications/Xcode_12.2.app/Contents/Developer
+  DEVELOPER_DIR: /Applications/Xcode_12.4.app/Contents/Developer
   APPLICATION_NAME: realesrgan-ncnn-vulkan
 
 jobs:
@@ -70,7 +70,7 @@ jobs:
         path: ${{ env.PACKAGENAME }}.zip
 
   openmp-macos:
-    runs-on: macos-latest
+    runs-on: macOS-10.15
     steps:
     - name: cache-openmp
       id: cache-openmp
