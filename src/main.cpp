@@ -108,10 +108,10 @@ static void print_usage()
     fprintf(stderr, "  -v                   verbose output\n");
     fprintf(stderr, "  -i input-path        input image path (jpg/png/webp) or directory\n");
     fprintf(stderr, "  -o output-path       output image path (jpg/png/webp) or directory\n");
-    fprintf(stderr, "  -s scale             upscale ratio (4, default=4)\n");
+    fprintf(stderr, "  -s scale             upscale ratio (can be 2, 4. default=4)\n");
     fprintf(stderr, "  -t tile-size         tile size (>=32/0=auto, default=0) can be 0,0,0 for multi-gpu\n");
     fprintf(stderr, "  -m model-path        folder path to pre-trained models(default=models)\n");
-    fprintf(stderr, "  -n model-name        model name (default=realesrgan-x4plus, can be realesrgan-x4plus | realesrgan-x4plus-anime | realesrnet-x4plus)\n");
+    fprintf(stderr, "  -n model-name        model name (default=realesrgan-x4plus, can be realesrgan-x4plus | realesrgan-x4plus-anime | realesrnet-x4plus | RealESRGANv2-animevideo-xsx2 | RealESRGANv2-animevideo-xsx4 | RealESRGANv2-anime-xsx2 | RealESRGANv2-anime-xsx4)\n");
     fprintf(stderr, "  -g gpu-id            gpu device to use (default=auto) can be 0,1,2 for multi-gpu\n");
     fprintf(stderr, "  -j load:proc:save    thread count for load/proc/save (default=1:2:2) can be 1:2,2,2:2 for multi-gpu\n");
     fprintf(stderr, "  -x                   enable tta mode\n");
@@ -549,12 +549,6 @@ int main(int argc, char** argv)
         return -1;
     }
 
-    if (scale != 4)
-    {
-        fprintf(stderr, "invalid scale argument\n");
-        return -1;
-    }
-
     if (tilesize.size() != (gpuid.empty() ? 1 : gpuid.size()) && !tilesize.empty())
     {
         fprintf(stderr, "invalid tilesize argument\n");
@@ -703,19 +697,17 @@ int main(int argc, char** argv)
 #if _WIN32
     wchar_t parampath[256];
     wchar_t modelpath[256];
-    if (scale == 4)
-    {
-        swprintf(parampath, 256, L"%s/%s.param", model.c_str(), modelname.c_str());
-        swprintf(modelpath, 256, L"%s/%s.bin", model.c_str(), modelname.c_str());
-    }
+
+    swprintf(parampath, 256, L"%s/%s.param", model.c_str(), modelname.c_str());
+    swprintf(modelpath, 256, L"%s/%s.bin", model.c_str(), modelname.c_str());
+
 #else
     char parampath[256];
     char modelpath[256];
-    if (scale == 4)
-    {
-        sprintf(parampath, "%s/%s.param", model.c_str(), modelname.c_str());
-        sprintf(modelpath, "%s/%s.bin", model.c_str(), modelname.c_str());
-    }
+
+    sprintf(parampath, "%s/%s.param", model.c_str(), modelname.c_str());
+    sprintf(modelpath, "%s/%s.bin", model.c_str(), modelname.c_str());
+
 #endif
 
     path_t paramfullpath = sanitize_filepath(parampath);
