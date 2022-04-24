@@ -714,8 +714,8 @@ int main(int argc, char** argv)
 
     if (modelname == PATHSTR("realesr-animevideov3"))
     {
-        sprintf(parampath, "%s/%s-x%s.param", model.c_str(), modelname.c_str(), std::to_string(scale));
-        sprintf(modelpath, "%s/%s-x%s.bin", model.c_str(), modelname.c_str(), std::to_string(scale));
+        sprintf(parampath, "%s/%s-x%s.param", model.c_str(), modelname.c_str(), string(scale));
+        sprintf(modelpath, "%s/%s-x%s.bin", model.c_str(), modelname.c_str(), string(scale));
     }
     else{
         sprintf(parampath, "%s/%s.param", model.c_str(), modelname.c_str());
