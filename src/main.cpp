@@ -105,17 +105,17 @@ static void print_usage()
 {
     fprintf(stderr, "Usage: realesrgan-ncnn-vulkan -i infile -o outfile [options]...\n\n");
     fprintf(stderr, "  -h                   show this help\n");
-    fprintf(stderr, "  -v                   verbose output\n");
     fprintf(stderr, "  -i input-path        input image path (jpg/png/webp) or directory\n");
     fprintf(stderr, "  -o output-path       output image path (jpg/png/webp) or directory\n");
-    fprintf(stderr, "  -s scale             upscale ratio (can be 2, 4. default=4)\n");
+    fprintf(stderr, "  -s scale             upscale ratio (can be 2, 3, 4. default=4)\n");
     fprintf(stderr, "  -t tile-size         tile size (>=32/0=auto, default=0) can be 0,0,0 for multi-gpu\n");
-    fprintf(stderr, "  -m model-path        folder path to pre-trained models(default=models)\n");
-    fprintf(stderr, "  -n model-name        model name (default=realesrgan-x4plus, can be realesrgan-x4plus | realesrgan-x4plus-anime | realesrnet-x4plus | RealESRGANv2-animevideo-xsx2 | RealESRGANv2-animevideo-xsx4 | RealESRGANv2-anime-xsx2 | RealESRGANv2-anime-xsx4)\n");
+    fprintf(stderr, "  -m model-path        folder path to the pre-trained models. default=models\n");
+    fprintf(stderr, "  -n model-name        model name (default=realesr-animevideov3, can be realesr-animevideov3 | realesrgan-x4plus | realesrgan-x4plus-anime | realesrnet-x4plus)\n");
     fprintf(stderr, "  -g gpu-id            gpu device to use (default=auto) can be 0,1,2 for multi-gpu\n");
     fprintf(stderr, "  -j load:proc:save    thread count for load/proc/save (default=1:2:2) can be 1:2,2,2:2 for multi-gpu\n");
     fprintf(stderr, "  -x                   enable tta mode\n");
     fprintf(stderr, "  -f format            output image format (jpg/png/webp, default=ext/png)\n");
+    fprintf(stderr, "  -v                   verbose output\n");
 }
 
 class Task
@@ -439,7 +439,7 @@ int main(int argc, char** argv)
     int scale = 4;
     std::vector<int> tilesize;
     path_t model = PATHSTR("models");
-    path_t modelname = PATHSTR("realesrgan-x4plus");
+    path_t modelname = PATHSTR("realesr-animevideov3");
     std::vector<int> gpuid;
     int jobs_load = 1;
     std::vector<int> jobs_proc;
@@ -698,16 +698,29 @@ int main(int argc, char** argv)
     wchar_t parampath[256];
     wchar_t modelpath[256];
 
-    swprintf(parampath, 256, L"%s/%s.param", model.c_str(), modelname.c_str());
-    swprintf(modelpath, 256, L"%s/%s.bin", model.c_str(), modelname.c_str());
+    if (modelname == PATHSTR("realesr-animevideov3"))
+    {
+        swprintf(parampath, 256, L"%s/%s-x%s.param", model.c_str(), modelname.c_str(), std::to_string(scale));
+        swprintf(modelpath, 256, L"%s/%s-x%s.bin", model.c_str(), modelname.c_str(), std::to_string(scale));
+    }
+    else{
+        swprintf(parampath, 256, L"%s/%s.param", model.c_str(), modelname.c_str());
+        swprintf(modelpath, 256, L"%s/%s.bin", model.c_str(), modelname.c_str());
+    }
 
 #else
     char parampath[256];
     char modelpath[256];
 
-    sprintf(parampath, "%s/%s.param", model.c_str(), modelname.c_str());
-    sprintf(modelpath, "%s/%s.bin", model.c_str(), modelname.c_str());
-
+    if (modelname == PATHSTR("realesr-animevideov3"))
+    {
+        sprintf(parampath, "%s/%s-x%s.param", model.c_str(), modelname.c_str(), std::to_string(scale));
+        sprintf(modelpath, "%s/%s-x%s.bin", model.c_str(), modelname.c_str(), std::to_string(scale));
+    }
+    else{
+        sprintf(parampath, "%s/%s.param", model.c_str(), modelname.c_str());
+        sprintf(modelpath, "%s/%s.bin", model.c_str(), modelname.c_str());
+    }
 #endif
 
     path_t paramfullpath = sanitize_filepath(parampath);

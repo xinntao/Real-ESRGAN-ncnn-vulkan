@@ -1,6 +1,8 @@
 *.bin
 *.param
 build
+Debug
+release
 
 # Prerequisites
 *.d
