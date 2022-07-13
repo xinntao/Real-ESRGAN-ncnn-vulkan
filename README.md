@@ -14,7 +14,7 @@ Real-ESRGAN aims at developing **Practical Algorithms for General Image Restorat
 ### Contents
 
 - [TODO List](#hourglass_flowing_sand-todo-list)
-- [Usages](#computer-usages)
+- [Usages](#computer-Usages)
 
 ---
 
