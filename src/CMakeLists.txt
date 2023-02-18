@@ -274,6 +274,10 @@ compile_shader(realesrgan_postproc_tta.comp)
 
 add_custom_target(generate-spirv DEPENDS ${SHADER_SPV_HEX_FILES})
 
+if(MINGW)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -municode")
+endif()
+
 add_executable(realesrgan-ncnn-vulkan main.cpp realesrgan.cpp)
 
 add_dependencies(realesrgan-ncnn-vulkan generate-spirv)
