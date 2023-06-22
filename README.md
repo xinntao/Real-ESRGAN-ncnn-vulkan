@@ -54,6 +54,12 @@ Other recommended projects:<br>
 realesrgan-ncnn-vulkan.exe -i input.jpg -o output.png -n realesr-animevideov3 -s 2
 ```
 
+### Pareto Principle Way
+
+with the ``DragAndDropFolderScale.bat`` you can quickly scale up whole folders on a windows system.
+
+you just grab the folder📂 and drag it to the script⚙️ and it asks you in 2 steps what you want.
+
 ### Full Usages
 
 ```console
