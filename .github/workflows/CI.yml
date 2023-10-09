@@ -19,7 +19,6 @@ jobs:
       run: |
         Invoke-WebRequest -Uri https://sdk.lunarg.com/sdk/download/1.3.261.1/windows/VulkanSDK-1.3.261.1-Installer.exe?Human=true -OutFile VulkanSDK-1.3.261.1-Installer.exe
         7z x -aoa ./VulkanSDK-1.3.261.1-Installer.exe -oVulkanSDK
-        Remove-Item .\VulkanSDK\Demos, .\VulkanSDK\Third-Party, .\VulkanSDK\Tools, .\VulkanSDK\Tools32, .\VulkanSDK\Bin32, .\VulkanSDK\Lib32 -Recurse
     - name: build
       run: |
         $env:VULKAN_SDK="$(pwd)/VulkanSDK"
