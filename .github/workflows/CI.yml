@@ -1,56 +1,57 @@
 name: CI
-on: [push, pull_request]
+on:
+  workflow_dispatch:
 
 jobs:
-  # windows:
-  #   runs-on: windows-latest
-  #   steps:
-  #   - uses: actions/checkout@v2
-  #     with:
-  #       submodules: 'recursive'
-  #   - name: cache-vulkansdk
-  #     id: cache-vulkansdk
-  #     uses: actions/cache@v1
-  #     with:
-  #       path: "VulkanSDK"
-  #       key: VulkanSDK-1.3.261.1-Installer
-  #   - name: vulkansdk
-  #     if: steps.cache-vulkansdk.outputs.cache-hit != 'true'
-  #     run: |
-  #       Invoke-WebRequest -Uri https://sdk.lunarg.com/sdk/download/1.3.261.1/windows/VulkanSDK-1.3.261.1-Installer.exe?Human=true -OutFile VulkanSDK-1.3.261.1-Installer.exe
-  #       7z x -aoa ./VulkanSDK-1.3.261.1-Installer.exe -oVulkanSDK
-  #   - name: build
-  #     run: |
-  #       $env:VULKAN_SDK="$(pwd)/VulkanSDK"
-  #       mkdir build; cd build
-  #       cmake -A x64 ../src
-  #       cmake --build . --config Release -j 2
+  windows:
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        submodules: 'recursive'
+    - name: cache-vulkansdk
+      id: cache-vulkansdk
+      uses: actions/cache@v1
+      with:
+        path: "VulkanSDK"
+        key: VulkanSDK-1.3.261.1-Installer
+    - name: vulkansdk
+      if: steps.cache-vulkansdk.outputs.cache-hit != 'true'
+      run: |
+        Invoke-WebRequest -Uri https://sdk.lunarg.com/sdk/download/1.3.261.1/windows/VulkanSDK-1.3.261.1-Installer.exe?Human=true -OutFile VulkanSDK-1.3.261.1-Installer.exe
+        7z x -aoa ./VulkanSDK-1.3.261.1-Installer.exe -oVulkanSDK
+    - name: build
+      run: |
+        $env:VULKAN_SDK="$(pwd)/VulkanSDK"
+        mkdir build; cd build
+        cmake -A x64 ../src
+        cmake --build . --config Release -j 2
 
-  # ubuntu:
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #   - uses: actions/checkout@v2
-  #     with:
-  #       submodules: 'recursive'
-  #   - name: cache-vulkansdk
-  #     id: cache-vulkansdk
-  #     uses: actions/cache@v1
-  #     with:
-  #       path: "1.3.261.1"
-  #       key: vulkansdk-linux-x86_64-1.3.261.1
-  #   - name: vulkansdk
-  #     if: steps.cache-vulkansdk.outputs.cache-hit != 'true'
-  #     run: |
-  #       wget https://sdk.lunarg.com/sdk/download/1.3.261.1/linux/vulkansdk-linux-x86_64-1.3.261.1.tar.xz?Human=true -O vulkansdk-linux-x86_64-1.3.261.1.tar.xz
-  #       tar -xf vulkansdk-linux-x86_64-1.3.261.1.tar.xz
-  #       rm -rf 1.3.261.1/source 1.3.261.1/samples
-  #       find 1.3.261.1 -type f | grep -v -E 'vulkan|glslang' | xargs rm
-  #   - name: build
-  #     run: |
-  #       export VULKAN_SDK=`pwd`/1.3.261.1/x86_64
-  #       mkdir build && cd build
-  #       cmake ../src
-  #       cmake --build . -j 2
+  ubuntu:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        submodules: 'recursive'
+    - name: cache-vulkansdk
+      id: cache-vulkansdk
+      uses: actions/cache@v1
+      with:
+        path: "1.3.261.1"
+        key: vulkansdk-linux-x86_64-1.3.261.1
+    - name: vulkansdk
+      if: steps.cache-vulkansdk.outputs.cache-hit != 'true'
+      run: |
+        wget https://sdk.lunarg.com/sdk/download/1.3.261.1/linux/vulkansdk-linux-x86_64-1.3.261.1.tar.xz?Human=true -O vulkansdk-linux-x86_64-1.3.261.1.tar.xz
+        tar -xf vulkansdk-linux-x86_64-1.3.261.1.tar.xz
+        rm -rf 1.3.261.1/source 1.3.261.1/samples
+        find 1.3.261.1 -type f | grep -v -E 'vulkan|glslang' | xargs rm
+    - name: build
+      run: |
+        export VULKAN_SDK=`pwd`/1.3.261.1/x86_64
+        mkdir build && cd build
+        cmake ../src
+        cmake --build . -j 2
 
   macos:
     runs-on: macos-latest
