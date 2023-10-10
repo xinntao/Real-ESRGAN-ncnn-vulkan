@@ -55,7 +55,7 @@ jobs:
   macos:
     runs-on: macos-latest
     env:
-      DEVELOPER_DIR: /Applications/Xcode_14.3.1.app/Contents/Developer
+      DEVELOPER_DIR: /Applications/Xcode.app/Contents/Developer
     steps:
     - uses: actions/checkout@v2
       with:
@@ -77,7 +77,6 @@ jobs:
         hdiutil detach /Volumes/vulkansdk-macos-1.3.261.1
     - name: build-x86_64
       run: |
-        ls -alh /Applications/
         export VULKAN_SDK=`pwd`/vulkansdk-macos-1.3.261.1/macOS
         mkdir build-x86_64 && cd build-x86_64
         cmake -DUSE_STATIC_MOLTENVK=ON -DCMAKE_OSX_ARCHITECTURES="x86_64" \
