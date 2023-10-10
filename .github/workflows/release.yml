@@ -1,8 +1,11 @@
 name: release
 on:
-  push:
-    tags:
-      - "*"
+  workflow_dispatch:
+    inputs:
+      version:
+        type: string
+        required: true
+        description: "Application version"
 
 env:
   DEVELOPER_DIR: /Applications/Xcode.app/Contents/Developer
@@ -20,7 +23,7 @@ jobs:
         run: echo ::set-output name=APPNAME::${APPLICATION_NAME}
       - name: get-version
         id: get_version
-        run: echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\//}
+        run: echo ::set-output name=VERSION::${{ github.event.inputs.version }}
 
   ubuntu:
     needs: [setup]
