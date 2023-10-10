@@ -5,7 +5,7 @@ on:
       - "*"
 
 env:
-  DEVELOPER_DIR: /Applications/Xcode_12.4.app/Contents/Developer
+  DEVELOPER_DIR: /Applications/Xcode.app/Contents/Developer
   APPLICATION_NAME: realesrgan-ncnn-vulkan
 
 jobs:
@@ -76,22 +76,22 @@ jobs:
         uses: actions/cache@v1
         with:
           path: openmp-install
-          key: openmp-macos-release-11.0.0
+          key: openmp-macos-release-17.0.2
       - name: checkout
         if: steps.cache-openmp.outputs.cache-hit != 'true'
         uses: actions/checkout@v2
       - name: openmp
         if: steps.cache-openmp.outputs.cache-hit != 'true'
         run: |
-          wget https://github.com/llvm/llvm-project/releases/download/llvmorg-11.0.0/openmp-11.0.0.src.tar.xz
-          tar -xf openmp-11.0.0.src.tar.xz
-          cd openmp-11.0.0.src
+          wget https://github.com/llvm/llvm-project/releases/download/llvmorg-17.0.2/openmp-17.0.2.src.tar.xz
+          tar -xf openmp-17.0.2.src.tar.xz
+          cd openmp-17.0.2.src
           sed -i'' -e '/.size __kmp_unnamed_critical_addr/d' runtime/src/z_Linux_asm.S
           sed -i'' -e 's/__kmp_unnamed_critical_addr/___kmp_unnamed_critical_addr/g' runtime/src/z_Linux_asm.S
       - name: build-x86_64
         if: steps.cache-openmp.outputs.cache-hit != 'true'
         run: |
-          cd openmp-11.0.0.src
+          cd openmp-17.0.2.src
           mkdir build-x86_64 && cd build-x86_64
           cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=install -DCMAKE_OSX_ARCHITECTURES="x86_64" \
               -DLIBOMP_ENABLE_SHARED=OFF -DLIBOMP_OMPT_SUPPORT=OFF -DLIBOMP_USE_HWLOC=OFF ..
@@ -100,7 +100,7 @@ jobs:
       - name: build-arm64
         if: steps.cache-openmp.outputs.cache-hit != 'true'
         run: |
-          cd openmp-11.0.0.src
+          cd openmp-17.0.2.src
           mkdir build-arm64 && cd build-arm64
           cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=install -DCMAKE_OSX_ARCHITECTURES="arm64" \
               -DLIBOMP_ENABLE_SHARED=OFF -DLIBOMP_OMPT_SUPPORT=OFF -DLIBOMP_USE_HWLOC=OFF ..
@@ -111,9 +111,9 @@ jobs:
         run: |
           rm -rf $GITHUB_WORKSPACE/openmp-install
           mkdir -p $GITHUB_WORKSPACE/openmp-install
-          cp -r openmp-11.0.0.src/build-x86_64/install/include $GITHUB_WORKSPACE/openmp-install
+          cp -r openmp-17.0.2.src/build-x86_64/install/include $GITHUB_WORKSPACE/openmp-install
           mkdir -p $GITHUB_WORKSPACE/openmp-install/lib
-          lipo -create openmp-11.0.0.src/build-x86_64/install/lib/libomp.a openmp-11.0.0.src/build-arm64/install/lib/libomp.a -o $GITHUB_WORKSPACE/openmp-install/lib/libomp.a
+          lipo -create openmp-17.0.2.src/build-x86_64/install/lib/libomp.a openmp-17.0.2.src/build-arm64/install/lib/libomp.a -o $GITHUB_WORKSPACE/openmp-install/lib/libomp.a
       - name: upload
         uses: actions/upload-artifact@v2
         with:
@@ -149,8 +149,8 @@ jobs:
         run: |
           wget https://sdk.lunarg.com/sdk/download/1.3.261.1/mac/vulkansdk-macos-1.3.261.1.dmg?Human=true -O vulkansdk-macos-1.3.261.1.dmg
           hdiutil attach vulkansdk-macos-1.3.261.1.dmg
-          cp -r /Volumes/vulkansdk-macos-1.3.261.1 .
-          rm -rf vulkansdk-macos-1.3.261.1/Applications
+          sudo /Volumes/vulkansdk-macos-1.3.261.1/InstallVulkan.app/Contents/MacOS/InstallVulkan --root `pwd`/vulkansdk-macos-1.3.261.1 --accept-licenses --default-answer --confirm-command install
+          sudo rm -rf vulkansdk-macos-1.3.261.1/Applications
           find vulkansdk-macos-1.3.261.1 -type f | grep -v -E 'vulkan|glslang|MoltenVK' | xargs rm
           hdiutil detach /Volumes/vulkansdk-macos-1.3.261.1
       - name: build-x86_64
