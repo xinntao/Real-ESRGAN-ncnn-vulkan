@@ -75,7 +75,7 @@ jobs:
         # cp -r /Volumes/vulkansdk-macos-1.3.261.1 .
         sudo /Volumes/vulkansdk-macos-1.3.261.1/InstallVulkan.app/Contents/MacOS/InstallVulkan --root `pwd`/vulkansdk-macos-1.3.261.1 --accept-licenses --default-answer --confirm-command install
         ls -alh
-        rm -rf vulkansdk-macos-1.3.261.1/Applications
+        sudo rm -rf vulkansdk-macos-1.3.261.1/Applications
         find vulkansdk-macos-1.3.261.1 -type f | grep -v -E 'vulkan|glslang|MoltenVK' | xargs rm
         hdiutil detach /Volumes/vulkansdk-macos-1.3.261.1
     - name: build-x86_64
