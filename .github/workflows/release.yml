@@ -160,7 +160,7 @@ jobs:
         run: |
           export VULKAN_SDK=`pwd`/vulkansdk-macos-1.3.261.1/macOS
           mkdir build-x86_64 && cd build-x86_64
-          cmake -D USE_STATIC_MOLTENVK=ON -D CMAKE_OSX_ARCHITECTURES="x86_64" \
+          cmake -D CMAKE_MODULE_PATH=/usr/lib64/cmake/llvm -D USE_STATIC_MOLTENVK=ON -D CMAKE_OSX_ARCHITECTURES="x86_64" \
               -D OpenMP_C_FLAGS="-Xclang -fopenmp" -D OpenMP_CXX_FLAGS="-Xclang -fopenmp" \
               -D OpenMP_C_LIB_NAMES="libomp" -D OpenMP_CXX_LIB_NAMES="libomp" \
               -D OpenMP_libomp_LIBRARY="$DEVELOPER_DIR/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/lib/libomp.a" \
@@ -172,7 +172,7 @@ jobs:
         run: |
           export VULKAN_SDK=`pwd`/vulkansdk-macos-1.3.261.1/macOS
           mkdir build-arm64 && cd build-arm64
-          cmake -D USE_STATIC_MOLTENVK=ON -D CMAKE_OSX_ARCHITECTURES="arm64" \
+          cmake -D CMAKE_MODULE_PATH=/usr/lib64/cmake/llvm -D USE_STATIC_MOLTENVK=ON -D CMAKE_OSX_ARCHITECTURES="arm64" \
               -D CMAKE_CROSSCOMPILING=ON -D CMAKE_SYSTEM_PROCESSOR=arm64 \
               -D OpenMP_C_FLAGS="-Xclang -fopenmp" -D OpenMP_CXX_FLAGS="-Xclang -fopenmp" \
               -D OpenMP_C_LIB_NAMES="libomp" -D OpenMP_CXX_LIB_NAMES="libomp" \
