@@ -83,6 +83,11 @@ jobs:
       - name: checkout
         if: steps.cache-openmp.outputs.cache-hit != 'true'
         uses: actions/checkout@v2
+      - name: Setup CMake
+        uses: threeal/cmake-action@v1.3.0
+        with:
+          run-build: false
+          run-test: false
       - name: openmp
         if: steps.cache-openmp.outputs.cache-hit != 'true'
         run: |
@@ -132,11 +137,6 @@ jobs:
       - uses: actions/checkout@v2
         with:
           submodules: "recursive"
-      - name: Setup CMake
-        uses: threeal/cmake-action@v1.3.0
-        with:
-          run-build: false
-          run-test: false
       - name: download-openmp-macos
         uses: actions/download-artifact@v2
         with:
