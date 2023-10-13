@@ -71,75 +71,75 @@ jobs:
   #         name: ${{ env.PACKAGENAME }}
   #         path: ${{ env.PACKAGENAME }}.zip
 
-  openmp-macos:
-    runs-on: macos-latest
-    steps:
-      - name: cache-openmp
-        id: cache-openmp
-        uses: actions/cache@v1
-        with:
-          path: openmp-install
-          key: openmp-macos-release-17.0.2
-      - name: checkout
-        if: steps.cache-openmp.outputs.cache-hit != 'true'
-        uses: actions/checkout@v2
-      # - name: Setup CMake
-      #   uses: threeal/cmake-action@v1.3.0
-      #   with:
-      #     run-build: false
-      #     run-test: false
-      - name: Set up LLVM
-        run: |
-          brew install llvm
-          brew install libomp
-          export PATH="/opt/homebrew/opt/llvm/bin:$PATH"
-          export LDFLAGS="-L/opt/homebrew/opt/libomp/lib"
-          export CPPFLAGS="-I/opt/homebrew/opt/libomp/include"
-      - name: Install llvm-lit
-        run: |
-          brew install lit
-      - name: openmp
-        if: steps.cache-openmp.outputs.cache-hit != 'true'
-        run: |
-          wget https://github.com/llvm/llvm-project/releases/download/llvmorg-17.0.2/openmp-17.0.2.src.tar.xz
-          tar -xf openmp-17.0.2.src.tar.xz
-          cd openmp-17.0.2.src
-          sed -i'' -e '/.size __kmp_unnamed_critical_addr/d' runtime/src/z_Linux_asm.S
-          sed -i'' -e 's/__kmp_unnamed_critical_addr/___kmp_unnamed_critical_addr/g' runtime/src/z_Linux_asm.S
-      - name: build-x86_64
-        if: steps.cache-openmp.outputs.cache-hit != 'true'
-        run: |
-          cd openmp-17.0.2.src
-          mkdir build-x86_64 && cd build-x86_64
-          cmake -D CMAKE_BUILD_TYPE=Release -D CMAKE_INSTALL_PREFIX=install -D CMAKE_OSX_ARCHITECTURES="x86_64" \
-              -D LIBOMP_ENABLE_SHARED=OFF -D LIBOMP_OMPT_SUPPORT=OFF -D LIBOMP_USE_HWLOC=OFF ..
-          cmake --build . -j 3
-          cmake --build . --target install
-      - name: build-arm64
-        if: steps.cache-openmp.outputs.cache-hit != 'true'
-        run: |
-          cd openmp-17.0.2.src
-          mkdir build-arm64 && cd build-arm64
-          cmake -D CMAKE_BUILD_TYPE=Release -D CMAKE_INSTALL_PREFIX=install -D CMAKE_OSX_ARCHITECTURES="arm64" \
-              -D LIBOMP_ENABLE_SHARED=OFF -D LIBOMP_OMPT_SUPPORT=OFF -D LIBOMP_USE_HWLOC=OFF ..
-          cmake --build . -j 3
-          cmake --build . --target install
-      - name: merge-fat-library
-        if: steps.cache-openmp.outputs.cache-hit != 'true'
-        run: |
-          rm -rf $GITHUB_WORKSPACE/openmp-install
-          mkdir -p $GITHUB_WORKSPACE/openmp-install
-          cp -r openmp-17.0.2.src/build-x86_64/install/include $GITHUB_WORKSPACE/openmp-install
-          mkdir -p $GITHUB_WORKSPACE/openmp-install/lib
-          lipo -create openmp-17.0.2.src/build-x86_64/install/lib/libomp.a openmp-17.0.2.src/build-arm64/install/lib/libomp.a -o $GITHUB_WORKSPACE/openmp-install/lib/libomp.a
-      - name: upload
-        uses: actions/upload-artifact@v2
-        with:
-          name: openmp-macos
-          path: openmp-install
+  # openmp-macos:
+  #   runs-on: macos-latest
+  #   steps:
+  #     - name: cache-openmp
+  #       id: cache-openmp
+  #       uses: actions/cache@v1
+  #       with:
+  #         path: openmp-install
+  #         key: openmp-macos-release-17.0.2
+  #     - name: checkout
+  #       if: steps.cache-openmp.outputs.cache-hit != 'true'
+  #       uses: actions/checkout@v2
+  #     # - name: Setup CMake
+  #     #   uses: threeal/cmake-action@v1.3.0
+  #     #   with:
+  #     #     run-build: false
+  #     #     run-test: false
+  #     - name: Set up LLVM
+  #       run: |
+  #         brew install llvm
+  #         brew install libomp
+  #         export PATH="/opt/homebrew/opt/llvm/bin:$PATH"
+  #         export LDFLAGS="-L/opt/homebrew/opt/libomp/lib"
+  #         export CPPFLAGS="-I/opt/homebrew/opt/libomp/include"
+  #     - name: Install llvm-lit
+  #       run: |
+  #         brew install lit
+  #     - name: openmp
+  #       if: steps.cache-openmp.outputs.cache-hit != 'true'
+  #       run: |
+  #         wget https://github.com/llvm/llvm-project/releases/download/llvmorg-17.0.2/openmp-17.0.2.src.tar.xz
+  #         tar -xf openmp-17.0.2.src.tar.xz
+  #         cd openmp-17.0.2.src
+  #         sed -i'' -e '/.size __kmp_unnamed_critical_addr/d' runtime/src/z_Linux_asm.S
+  #         sed -i'' -e 's/__kmp_unnamed_critical_addr/___kmp_unnamed_critical_addr/g' runtime/src/z_Linux_asm.S
+  #     - name: build-x86_64
+  #       if: steps.cache-openmp.outputs.cache-hit != 'true'
+  #       run: |
+  #         cd openmp-17.0.2.src
+  #         mkdir build-x86_64 && cd build-x86_64
+  #         cmake -D CMAKE_BUILD_TYPE=Release -D CMAKE_INSTALL_PREFIX=install -D CMAKE_OSX_ARCHITECTURES="x86_64" \
+  #             -D LIBOMP_ENABLE_SHARED=OFF -D LIBOMP_OMPT_SUPPORT=OFF -D LIBOMP_USE_HWLOC=OFF ..
+  #         cmake --build . -j 3
+  #         cmake --build . --target install
+  #     - name: build-arm64
+  #       if: steps.cache-openmp.outputs.cache-hit != 'true'
+  #       run: |
+  #         cd openmp-17.0.2.src
+  #         mkdir build-arm64 && cd build-arm64
+  #         cmake -D CMAKE_BUILD_TYPE=Release -D CMAKE_INSTALL_PREFIX=install -D CMAKE_OSX_ARCHITECTURES="arm64" \
+  #             -D LIBOMP_ENABLE_SHARED=OFF -D LIBOMP_OMPT_SUPPORT=OFF -D LIBOMP_USE_HWLOC=OFF ..
+  #         cmake --build . -j 3
+  #         cmake --build . --target install
+  #     - name: merge-fat-library
+  #       if: steps.cache-openmp.outputs.cache-hit != 'true'
+  #       run: |
+  #         rm -rf $GITHUB_WORKSPACE/openmp-install
+  #         mkdir -p $GITHUB_WORKSPACE/openmp-install
+  #         cp -r openmp-17.0.2.src/build-x86_64/install/include $GITHUB_WORKSPACE/openmp-install
+  #         mkdir -p $GITHUB_WORKSPACE/openmp-install/lib
+  #         lipo -create openmp-17.0.2.src/build-x86_64/install/lib/libomp.a openmp-17.0.2.src/build-arm64/install/lib/libomp.a -o $GITHUB_WORKSPACE/openmp-install/lib/libomp.a
+  #     - name: upload
+  #       uses: actions/upload-artifact@v2
+  #       with:
+  #         name: openmp-macos
+  #         path: openmp-install
 
   macos:
-    needs: [setup, openmp-macos]
+    needs: [setup]
     runs-on: macos-latest
     env:
       PACKAGENAME: ${{ needs.setup.outputs.APPNAME }}-${{ needs.setup.outputs.VERSION }}-macos
@@ -147,15 +147,21 @@ jobs:
       - uses: actions/checkout@v2
         with:
           submodules: "recursive"
-      - name: download-openmp-macos
-        uses: actions/download-artifact@v2
-        with:
-          name: openmp-macos
-          path: openmp-macos
+      # - name: download-openmp-macos
+      #   uses: actions/download-artifact@v2
+      #   with:
+      #     name: openmp-macos
+      #     path: openmp-macos
       - name: install-openmp
         run: |
-          sudo cp openmp-macos/include/* $DEVELOPER_DIR/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include
-          sudo cp openmp-macos/lib/libomp.a $DEVELOPER_DIR/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/lib
+          brew install llvm
+          brew install lit
+          brew install libomp
+          export PATH="/opt/homebrew/opt/llvm/bin:$PATH"
+          export LDFLAGS="-L/opt/homebrew/opt/libomp/lib"
+          export CPPFLAGS="-I/opt/homebrew/opt/libomp/include"
+          sudo cp /opt/homebrew/opt/libomp/include/* $DEVELOPER_DIR/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include
+          sudo cp /opt/homebrew/opt/libomp/lib/libomp.a $DEVELOPER_DIR/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/lib
       - name: cache-vulkansdk
         id: cache-vulkansdk
         uses: actions/cache@v1
