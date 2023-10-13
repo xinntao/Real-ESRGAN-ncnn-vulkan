@@ -123,17 +123,28 @@ jobs:
       #         -D Vulkan_LIBRARY=`pwd`/../vulkansdk-macos-1.3.261.1/MoltenVK/MoltenVK.xcframework/macos-arm64_x86_64/libMoltenVK.a \
       #         ../src
       #     cmake --build . -j 3
-      - name: install-openmp
+      - name: install-openmp for arm64
         run: |
-          arch -arm64 brew reinstall llvm
-          arch -arm64 brew reinstall lit
-          arch -arm64 brew reinstall libomp
-          arch -arm64 brew info libomp
-          export PATH="/opt/homebrew/opt/llvm/bin:$PATH"
-          export LDFLAGS="-L/opt/homebrew/opt/libomp/lib"
-          export CPPFLAGS="-I/opt/homebrew/opt/libomp/include"
-          sudo cp /usr/local/Cellar/libomp/17.0.1/include/* $DEVELOPER_DIR/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include
-          sudo cp /usr/local/Cellar/libomp/17.0.1/lib/libomp.a $DEVELOPER_DIR/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/lib
+          setopt sh_word_split
+          mkdir arm-homebrew && curl -L https://github.com/Homebrew/brew/tarball/master | tar xz --strip 1 -C arm-homebrew 
+          alias arm-brew='$(pwd)/arm-homebrew/bin/brew'
+          response=$(arm-brew fetch --force --bottle-tag=arm64_ventura libomp | grep "Downloaded to")
+          parsed=($response)  
+          arm-brew install $parsed[3] 
+          arm-brew info $parsed[3]
+
+          response=$(arm-brew fetch --force --bottle-tag=arm64_ventura lit | grep "Downloaded to")
+          parsed=($response)  
+          arm-brew install $parsed[3] 
+          arm-brew info $parsed[3]
+
+          response=$(arm-brew fetch --force --bottle-tag=arm64_ventura llvm | grep "Downloaded to")
+          parsed=($response)  
+          arm-brew install $parsed[3] 
+          arm-brew info $parsed[3]
+
+          # sudo cp /usr/local/Cellar/libomp/17.0.1/include/* $DEVELOPER_DIR/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include
+          # sudo cp /usr/local/Cellar/libomp/17.0.1/lib/libomp.a $DEVELOPER_DIR/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/lib
       - name: build-arm64
         run: |
           export VULKAN_SDK=`pwd`/vulkansdk-macos-1.3.261.1/macOS
