@@ -83,11 +83,11 @@ jobs:
       - name: checkout
         if: steps.cache-openmp.outputs.cache-hit != 'true'
         uses: actions/checkout@v2
-      - name: Setup CMake
-        uses: threeal/cmake-action@v1.3.0
-        with:
-          run-build: false
-          run-test: false
+      # - name: Setup CMake
+      #   uses: threeal/cmake-action@v1.3.0
+      #   with:
+      #     run-build: false
+      #     run-test: false
       - name: Set up LLVM
         run: |
           brew install llvm
