@@ -156,7 +156,8 @@ jobs:
         run: |
           brew install llvm
           brew install lit
-          brew install libomp
+          brew reinstall libomp
+          brew info libomp
           export PATH="/opt/homebrew/opt/llvm/bin:$PATH"
           export LDFLAGS="-L/opt/homebrew/opt/libomp/lib"
           export CPPFLAGS="-I/opt/homebrew/opt/libomp/include"
