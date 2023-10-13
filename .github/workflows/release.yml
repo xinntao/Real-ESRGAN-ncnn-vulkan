@@ -25,51 +25,51 @@ jobs:
         id: get_version
         run: echo ::set-output name=VERSION::${{ github.event.inputs.version }}
 
-  ubuntu:
-    needs: [setup]
-    runs-on: ubuntu-latest
-    env:
-      PACKAGENAME: ${{ needs.setup.outputs.APPNAME }}-${{ needs.setup.outputs.VERSION }}-ubuntu
-    steps:
-      - uses: actions/checkout@v2
-        with:
-          submodules: "recursive"
-      - name: cache-vulkansdk
-        id: cache-vulkansdk
-        uses: actions/cache@v1
-        with:
-          path: "1.3.261.1"
-          key: vulkansdk-linux-x86_64-1.3.261.1
-      - name: vulkansdk
-        if: steps.cache-vulkansdk.outputs.cache-hit != 'true'
-        run: |
-          wget https://sdk.lunarg.com/sdk/download/1.3.261.1/linux/vulkansdk-linux-x86_64-1.3.261.1.tar.xz?Human=true -O vulkansdk-linux-x86_64-1.3.261.1.tar.xz
-          tar -xf vulkansdk-linux-x86_64-1.3.261.1.tar.xz
-          rm -rf 1.3.261.1/source 1.3.261.1/samples
-          find 1.3.261.1 -type f | grep -v -E 'vulkan|glslang' | xargs rm
-      - name: build
-        run: |
-          sudo add-apt-repository ppa:ubuntu-toolchain-r/test
-          sudo apt update
-          sudo apt install gcc-9 g++-9
-          export CXX="g++-9" CC="gcc-9"
-          export VULKAN_SDK=`pwd`/1.3.261.1/x86_64
-          mkdir build && cd build
-          cmake ../src
-          cmake --build . -j 2
-      - name: package
-        # cp -r models/* ${{ env.PACKAGENAME }}
-        run: |
-          mkdir -p ${{ env.PACKAGENAME }}
-          cp README.md LICENSE ${{ env.PACKAGENAME }}
-          cp build/${{ needs.setup.outputs.APPNAME }} ${{ env.PACKAGENAME }}
-          strip -g ${{ env.PACKAGENAME }}/${{ needs.setup.outputs.APPNAME }}
-          zip -9 -r ${{ env.PACKAGENAME }}.zip ${{ env.PACKAGENAME }}
-      - name: upload
-        uses: actions/upload-artifact@v2
-        with:
-          name: ${{ env.PACKAGENAME }}
-          path: ${{ env.PACKAGENAME }}.zip
+  # ubuntu:
+  #   needs: [setup]
+  #   runs-on: ubuntu-latest
+  #   env:
+  #     PACKAGENAME: ${{ needs.setup.outputs.APPNAME }}-${{ needs.setup.outputs.VERSION }}-ubuntu
+  #   steps:
+  #     - uses: actions/checkout@v2
+  #       with:
+  #         submodules: "recursive"
+  #     - name: cache-vulkansdk
+  #       id: cache-vulkansdk
+  #       uses: actions/cache@v1
+  #       with:
+  #         path: "1.3.261.1"
+  #         key: vulkansdk-linux-x86_64-1.3.261.1
+  #     - name: vulkansdk
+  #       if: steps.cache-vulkansdk.outputs.cache-hit != 'true'
+  #       run: |
+  #         wget https://sdk.lunarg.com/sdk/download/1.3.261.1/linux/vulkansdk-linux-x86_64-1.3.261.1.tar.xz?Human=true -O vulkansdk-linux-x86_64-1.3.261.1.tar.xz
+  #         tar -xf vulkansdk-linux-x86_64-1.3.261.1.tar.xz
+  #         rm -rf 1.3.261.1/source 1.3.261.1/samples
+  #         find 1.3.261.1 -type f | grep -v -E 'vulkan|glslang' | xargs rm
+  #     - name: build
+  #       run: |
+  #         sudo add-apt-repository ppa:ubuntu-toolchain-r/test
+  #         sudo apt update
+  #         sudo apt install gcc-9 g++-9
+  #         export CXX="g++-9" CC="gcc-9"
+  #         export VULKAN_SDK=`pwd`/1.3.261.1/x86_64
+  #         mkdir build && cd build
+  #         cmake ../src
+  #         cmake --build . -j 2
+  #     - name: package
+  #       # cp -r models/* ${{ env.PACKAGENAME }}
+  #       run: |
+  #         mkdir -p ${{ env.PACKAGENAME }}
+  #         cp README.md LICENSE ${{ env.PACKAGENAME }}
+  #         cp build/${{ needs.setup.outputs.APPNAME }} ${{ env.PACKAGENAME }}
+  #         strip -g ${{ env.PACKAGENAME }}/${{ needs.setup.outputs.APPNAME }}
+  #         zip -9 -r ${{ env.PACKAGENAME }}.zip ${{ env.PACKAGENAME }}
+  #     - name: upload
+  #       uses: actions/upload-artifact@v2
+  #       with:
+  #         name: ${{ env.PACKAGENAME }}
+  #         path: ${{ env.PACKAGENAME }}.zip
 
   openmp-macos:
     runs-on: macos-latest
@@ -210,50 +210,51 @@ jobs:
           name: ${{ env.PACKAGENAME }}
           path: ${{ env.PACKAGENAME }}.zip
 
-  windows:
-    needs: [setup]
-    runs-on: windows-latest
-    env:
-      PACKAGENAME: ${{ needs.setup.outputs.APPNAME }}-${{ needs.setup.outputs.VERSION }}-windows
-    steps:
-      - uses: actions/checkout@v2
-        with:
-          submodules: "recursive"
-      - name: cache-vulkansdk
-        id: cache-vulkansdk
-        uses: actions/cache@v1
-        with:
-          path: "VulkanSDK"
-          key: VulkanSDK-1.3.261.1-Installer
-      - name: vulkansdk
-        if: steps.cache-vulkansdk.outputs.cache-hit != 'true'
-        run: |
-          Invoke-WebRequest -Uri https://sdk.lunarg.com/sdk/download/1.3.261.1/windows/VulkanSDK-1.3.261.1-Installer.exe?Human=true -OutFile VulkanSDK-1.3.261.1-Installer.exe
-          7z x -aoa ./VulkanSDK-1.3.261.1-Installer.exe -oVulkanSDK
-      - name: build
-        run: |
-          $env:VULKAN_SDK="$(pwd)/VulkanSDK"
-          mkdir build; cd build
-          cmake -A x64 ../src
-          cmake --build . --config Release -j 2
-      - name: package
-        # Copy-Item -Verbose -Recurse -Path "models\*" -Destination "${{ env.PACKAGENAME }}"
-        run: |
-          mkdir ${{ env.PACKAGENAME }}
-          Copy-Item -Verbose -Path "README.md" -Destination "${{ env.PACKAGENAME }}"
-          Copy-Item -Verbose -Path "LICENSE" -Destination "${{ env.PACKAGENAME }}"
-          Copy-Item -Verbose -Path "build\Release\${{ needs.setup.outputs.APPNAME }}.exe" -Destination "${{ env.PACKAGENAME }}"
-          Copy-Item -Verbose -Path "C:\windows\system32\vcomp140.dll" -Destination "${{ env.PACKAGENAME }}"
-          Copy-Item -Verbose -Path "C:\windows\system32\vcomp140d.dll" -Destination "${{ env.PACKAGENAME }}"
-          7z a -r ${{ env.PACKAGENAME }}.zip ${{ env.PACKAGENAME }}
-      - name: upload
-        uses: actions/upload-artifact@v2
-        with:
-          name: ${{ env.PACKAGENAME }}
-          path: ${{ env.PACKAGENAME }}.zip
+  # windows:
+  #   needs: [setup]
+  #   runs-on: windows-latest
+  #   env:
+  #     PACKAGENAME: ${{ needs.setup.outputs.APPNAME }}-${{ needs.setup.outputs.VERSION }}-windows
+  #   steps:
+  #     - uses: actions/checkout@v2
+  #       with:
+  #         submodules: "recursive"
+  #     - name: cache-vulkansdk
+  #       id: cache-vulkansdk
+  #       uses: actions/cache@v1
+  #       with:
+  #         path: "VulkanSDK"
+  #         key: VulkanSDK-1.3.261.1-Installer
+  #     - name: vulkansdk
+  #       if: steps.cache-vulkansdk.outputs.cache-hit != 'true'
+  #       run: |
+  #         Invoke-WebRequest -Uri https://sdk.lunarg.com/sdk/download/1.3.261.1/windows/VulkanSDK-1.3.261.1-Installer.exe?Human=true -OutFile VulkanSDK-1.3.261.1-Installer.exe
+  #         7z x -aoa ./VulkanSDK-1.3.261.1-Installer.exe -oVulkanSDK
+  #     - name: build
+  #       run: |
+  #         $env:VULKAN_SDK="$(pwd)/VulkanSDK"
+  #         mkdir build; cd build
+  #         cmake -A x64 ../src
+  #         cmake --build . --config Release -j 2
+  #     - name: package
+  #       # Copy-Item -Verbose -Recurse -Path "models\*" -Destination "${{ env.PACKAGENAME }}"
+  #       run: |
+  #         mkdir ${{ env.PACKAGENAME }}
+  #         Copy-Item -Verbose -Path "README.md" -Destination "${{ env.PACKAGENAME }}"
+  #         Copy-Item -Verbose -Path "LICENSE" -Destination "${{ env.PACKAGENAME }}"
+  #         Copy-Item -Verbose -Path "build\Release\${{ needs.setup.outputs.APPNAME }}.exe" -Destination "${{ env.PACKAGENAME }}"
+  #         Copy-Item -Verbose -Path "C:\windows\system32\vcomp140.dll" -Destination "${{ env.PACKAGENAME }}"
+  #         Copy-Item -Verbose -Path "C:\windows\system32\vcomp140d.dll" -Destination "${{ env.PACKAGENAME }}"
+  #         7z a -r ${{ env.PACKAGENAME }}.zip ${{ env.PACKAGENAME }}
+  #     - name: upload
+  #       uses: actions/upload-artifact@v2
+  #       with:
+  #         name: ${{ env.PACKAGENAME }}
+  #         path: ${{ env.PACKAGENAME }}.zip
 
   release:
-    needs: [setup, ubuntu, macos, windows]
+    # needs: [setup, ubuntu, macos, windows]
+    needs: [setup, macos]
     runs-on: ubuntu-latest
     steps:
       - name: download
