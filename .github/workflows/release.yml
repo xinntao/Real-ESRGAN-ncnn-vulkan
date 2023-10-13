@@ -111,23 +111,22 @@ jobs:
           sudo rm -rf vulkansdk-macos-1.3.261.1/Applications
           find vulkansdk-macos-1.3.261.1 -type f | grep -v -E 'vulkan|glslang|MoltenVK' | xargs rm
           hdiutil detach /Volumes/vulkansdk-macos-1.3.261.1
-      # - name: build-x86_64
-      #   run: |
-      #     export VULKAN_SDK=`pwd`/vulkansdk-macos-1.3.261.1/macOS
-      #     mkdir build-x86_64 && cd build-x86_64
-      #     cmake -D USE_STATIC_MOLTENVK=ON -D CMAKE_OSX_ARCHITECTURES="x86_64" \
-      #         -D OpenMP_C_FLAGS="-Xclang -fopenmp" -D OpenMP_CXX_FLAGS="-Xclang -fopenmp" \
-      #         -D OpenMP_C_LIB_NAMES="libomp" -D OpenMP_CXX_LIB_NAMES="libomp" \
-      #         -D OpenMP_libomp_LIBRARY="$DEVELOPER_DIR/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/lib/libomp.a" \
-      #         -D Vulkan_INCLUDE_DIR=`pwd`/../vulkansdk-macos-1.3.261.1/MoltenVK/include \
-      #         -D Vulkan_LIBRARY=`pwd`/../vulkansdk-macos-1.3.261.1/MoltenVK/MoltenVK.xcframework/macos-arm64_x86_64/libMoltenVK.a \
-      #         ../src
-      #     cmake --build . -j 3
+      - name: build-x86_64
+        run: |
+          export VULKAN_SDK=`pwd`/vulkansdk-macos-1.3.261.1/macOS
+          mkdir build-x86_64 && cd build-x86_64
+          cmake -D USE_STATIC_MOLTENVK=ON -D CMAKE_OSX_ARCHITECTURES="x86_64" \
+              -D OpenMP_C_FLAGS="-Xclang -fopenmp" -D OpenMP_CXX_FLAGS="-Xclang -fopenmp" \
+              -D OpenMP_C_LIB_NAMES="libomp" -D OpenMP_CXX_LIB_NAMES="libomp" \
+              -D OpenMP_libomp_LIBRARY="$DEVELOPER_DIR/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/lib/libomp.a" \
+              -D Vulkan_INCLUDE_DIR=`pwd`/../vulkansdk-macos-1.3.261.1/MoltenVK/include \
+              -D Vulkan_LIBRARY=`pwd`/../vulkansdk-macos-1.3.261.1/MoltenVK/MoltenVK.xcframework/macos-arm64_x86_64/libMoltenVK.a \
+              ../src
+          cmake --build . -j 3
       - name: install-openmp for arm64
         run: |
-          brew fetch --force --bottle-tag=arm64_ventura libomp
-          brew reinstall $(brew --cache --bottle-tag=arm64_ventura libomp)
-
+          brew fetch --force --bottle-tag=arm64_monterey libomp
+          brew reinstall $(brew --cache --bottle-tag=arm64_monterey libomp)
           sudo cp /usr/local/Cellar/libomp/17.0.1/include/* $DEVELOPER_DIR/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include
           sudo cp /usr/local/Cellar/libomp/17.0.1/lib/libomp.a $DEVELOPER_DIR/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/lib
       - name: build-arm64
