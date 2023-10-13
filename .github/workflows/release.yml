@@ -88,6 +88,16 @@ jobs:
         with:
           run-build: false
           run-test: false
+      - name: Set up LLVM
+        run: |
+          brew install llvm
+          brew install libomp
+          export PATH="/opt/homebrew/opt/llvm/bin:$PATH"
+          export LDFLAGS="-L/opt/homebrew/opt/libomp/lib"
+          export CPPFLAGS="-I/opt/homebrew/opt/libomp/include"
+      - name: Install llvm-lit
+        run: |
+          brew install lit
       - name: openmp
         if: steps.cache-openmp.outputs.cache-hit != 'true'
         run: |
