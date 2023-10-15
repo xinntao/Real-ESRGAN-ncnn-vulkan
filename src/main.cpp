@@ -405,6 +405,8 @@ void* save(void* args)
         }
         if (success)
         {
+            fprintf(stderr, "Upscayl Successful\n");
+
             if (verbose)
             {
 #if _WIN32
