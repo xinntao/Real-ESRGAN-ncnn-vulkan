@@ -27,6 +27,18 @@ namespace fs = std::filesystem;
 #endif // _WIN32
 #include "webp_image.h"
 
+#include <thread>
+int getNumCpuCores()
+{
+    int numCpuCores = std::thread::hardware_concurrency();
+    if (numCpuCores == 0)
+    {
+        numCpuCores = 1; // assume at least one core
+    }
+
+    return numCpuCores;
+}
+
 #if _WIN32
 #include <wchar.h>
 static wchar_t* optarg = NULL;
@@ -141,8 +153,9 @@ public:
     void put(const Task& v)
     {
         lock.lock();
-
-        while (tasks.size() >= 8) // FIXME hardcode queue length
+        int numCpuCores = getNumCpuCores() * 2;
+        fprintf(stderr, "numCpuCores: %d\n", numCpuCores);
+        while (tasks.size() >= numCpuCores) // FIXME hardcode queue length
         {
             condition.wait(lock);
         }
