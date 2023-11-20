@@ -157,7 +157,7 @@ static bool parse_optarg_resize(const char* optarg, int* width, int* height, int
     {
         bool found = false;
         const char* modestr = colon + 1;
-        for (size_t i = 0; i < sizeof(resizemodes) / sizeof(resizemodes[0]); i++)
+        for (int i = 0; i < (int)(sizeof(resizemodes) / sizeof(resizemodes[0])); i++)
         {
             if (strcmp(modestr, resizemodes[i]) == 0)
             {
