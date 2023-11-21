@@ -41,7 +41,6 @@ Other recommended projects:<br>
 
 ## :hourglass_flowing_sand: TODO List
 
-- [ ] Support further cheap arbitrary resize (*e.g.*, bicubic, bilinear) for the model outputs
 - [ ] Bug: Some PCs will output black images
 - [ ] Add the guidance for ncnn model conversion
 - [ ] Support face restoration - GFPGAN
@@ -63,6 +62,7 @@ Usage: realesrgan-ncnn-vulkan.exe -i infile -o outfile [options]...
   -i input-path        input image path (jpg/png/webp) or directory"
   -o output-path       output image path (jpg/png/webp) or directory"
   -s scale             upscale ratio (can be 2, 3, 4. default=4)"
+  -r resize            resize output to dimension (default=WxH:default), use '-r help' for more details
   -t tile-size         tile size (>=32/0=auto, default=0) can be 0,0,0 for multi-gpu"
   -m model-path        folder path to the pre-trained models. default=models"
   -n model-name        model name (default=realesr-animevideov3, can be realesr-animevideov3 | realesrgan-x4plus | realesrgan-x4plus-anime | realesrnet-x4plus)"
@@ -78,6 +78,16 @@ Usage: realesrgan-ncnn-vulkan.exe -i infile -o outfile [options]...
 - `tile-size` = tile size, use smaller value to reduce GPU memory usage, default selects automatically
 - `load:proc:save` = thread count for the three stages (image decoding + model upscaling + image encoding), using larger values may increase GPU usage and consume more GPU memory. You can tune this configuration with "4:4:4" for many small-size images, and "2:2:2" for large-size images. The default setting usually works fine for most situations. If you find that your GPU is hungry, try increasing thread count to achieve faster processing.
 - `format` = the format of the image to be output, png is better supported, however webp generally yields smaller file sizes, both are losslessly encoded
+- `resize` = the forced output dimensions. \
+For example '1920x1080' or '1920x1080:default' will force all output images to be resized to 1920x1080 with the default filter if they aren't already. \
+Avaliable filters:
+  - default       - Automatically decide
+  - box           - A trapezoid w/1-pixel wide ramps, same result as box for integer scale ratios
+  - triangle      - On upsampling, produces same results as bilinear texture filtering
+  - cubicbspline  - The cubic b-spline (aka Mitchell-Netrevalli with B=1,C=0), gaussian-esque
+  - catmullrom    - An interpolating cubic spline
+  - mitchell      - Mitchell-Netrevalli filter with B=1/3, C=1/3
+  - pointsample   - Simple point sampling
 
 If you encounter crash or error, try to upgrade your GPU driver
 
