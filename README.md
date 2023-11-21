@@ -41,7 +41,6 @@ Other recommended projects:<br>
 
 ## :hourglass_flowing_sand: TODO List
 
-- [ ] Support further cheap arbitrary resize (*e.g.*, bicubic, bilinear) for the model outputs
 - [ ] Bug: Some PCs will output black images
 - [ ] Add the guidance for ncnn model conversion
 - [ ] Support face restoration - GFPGAN
